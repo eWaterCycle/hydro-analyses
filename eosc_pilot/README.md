@@ -19,7 +19,7 @@ RUN
 ```conda install xarray dask netCDF4 bottleneck```
 OR 
 ```conda install -c conda-forge xarray cartopy pynio pseudonetcdf``` 
-currntly pynio not available
+currently pynio not available
 
 RUN 
 ```conda install -c conda-forge cartopy```
