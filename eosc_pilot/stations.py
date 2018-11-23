@@ -5,9 +5,6 @@ import numpy as np
 import xarray as xr
 import pandas as pd
 
-data_var = []
-data_stats = []
-
 ds = xr.Dataset()
 ds_stats = xr.Dataset()
 
@@ -39,6 +36,10 @@ class Station:
         # ensemble member.
         # In addition the working directory contains files with ensemble
         # statistics with names 'discharge*Out.nc'
+
+        data_var = []
+        data_stats = []
+
         for f in os.listdir(netcdf_dir):
             fName, fExt = os.path.splitext(f) # break up name and extension
             if fExt == '.nc': #only use netcdf file
@@ -49,9 +50,9 @@ class Station:
                     ds[var_name] = xr.open_dataarray(fpath)
                 else:
                     var_name = fName
-                    data_stats.append(var_name) # todo 20181121 not used
+                    data_stats.append(var_name)
                     ds_stats[var_name] = xr.open_dataarray(fpath)
-        return data_var
+        return data_var, data_stats
 
     #Read netcdf simulation data
     def netcdf_data(self):
