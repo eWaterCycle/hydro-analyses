@@ -44,13 +44,13 @@ class Station:
             if fExt == '.nc': #only use netcdf file
                 fpath = os.path.join(netcdf_dir, f)
                 var_name = 'discharge' + fName[-3:]
-            if var_name != 'dischargeOut':
-                data_var.append(var_name)
-                ds[var_name] = xr.open_dataarray(fpath)
-            else:
-                var_name = fName
-                data_stats.append(var_name) # todo 20181121 not used
-                ds_stats[var_name] = xr.open_dataarray(fpath)
+                if var_name != 'dischargeOut':
+                    data_var.append(var_name)
+                    ds[var_name] = xr.open_dataarray(fpath)
+                else:
+                    var_name = fName
+                    data_stats.append(var_name) # todo 20181121 not used
+                    ds_stats[var_name] = xr.open_dataarray(fpath)
         return data_var
 
     #Read netcdf simulation data
