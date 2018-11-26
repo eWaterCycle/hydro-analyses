@@ -20,9 +20,12 @@ class Station:
         self.name = self.metadata['station_name']
         self.lat = self.metadata['grdc_latitude_in_arc_degree']
         self.lon = self.metadata['grdc_longitude_in_arc_degree']
-        description = self.metadata['station_name']+" - "+self.metadata['river_name']+" - "+                      self.metadata['country_code']
+        description = self.metadata['station_name']+" - "+\
+                      self.metadata['river_name']+" - "+\
+                      self.metadata['country_code']
         if label != "":
-            print("Changing station label from '"+description+"' to '"+label+"'")
+            print("Changing station label from '"+description+"' to '"+label+\
+                  "'")
             description = label
         self.label = description
 
@@ -58,7 +61,8 @@ class Station:
     def netcdf_data(self):
         #todo - make sure that station has already been initialised
         self.ds = ds.sel(lat=self.lat, lon=self.lon, method='nearest')
-        self.ds_stats = ds_stats.sel(lat=self.lat, lon=self.lon, method='nearest')
+        self.ds_stats = ds_stats.sel(lat=self.lat, lon=self.lon, \
+                                     method='nearest')
         self.mean = self.ds_stats['dischargeEnsMeanOut']
         self.std = self.ds_stats['dischargeEnsStdOut']
         
@@ -80,9 +84,11 @@ class Station:
         times = pd.date_range('2017-11-22', periods=9) #todo this is a big hack!
 
         grdc = pd.read_table(self.GRDCfilePath, skiprows= 40, delimiter=';')
-        grdc = grdc.rename(columns={'YYYY-MM-DD':'date', ' Original':'discharge'})
+        grdc = grdc.rename(columns={'YYYY-MM-DD':'date', \
+                                    ' Original':'discharge'})
         grdc = grdc.reset_index().set_index(pd.DatetimeIndex(grdc['date']))
-        grdc = grdc.drop(columns=['hh:mm', ' Calculated', ' Flag', 'index', 'date'])
+        grdc = grdc.drop(columns=['hh:mm', ' Calculated', ' Flag', 'index', \
+                                  'date'])
         grdc_other = np.array([])
         grdc_other = np.append(grdc_other,grdc[first_date:last_date])
 
@@ -107,7 +113,8 @@ def read_grdc(filePath):
     allLines = allLines.replace("\r","") 
     allLines = allLines.split("\n")
 
-    # get grdc ids (from files) and check their consistency with their file names  
+    # get grdc ids (from files) and check their consistency with their
+    # file names  
     id_from_file_name =  int(os.path.basename(filePath).split(".")[0])
     id_from_grdc = None
     if id_from_file_name == int(allLines[ 8].split(":")[1].strip()):
