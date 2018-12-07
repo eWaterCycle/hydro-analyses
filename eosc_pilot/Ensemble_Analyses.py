@@ -1,16 +1,12 @@
 # coding: utf-8
 
 import os
-from dateutil.relativedelta import relativedelta
-import numpy as np
 import xarray as xr
 import pandas as pd
+import warnings
+from dateutil.relativedelta import relativedelta
 
-
-# todo check if newest folder selection works for forecast
 # todo select single or ensemble model run
-# todo overwrite lat lon coordinates when needed
-# todo Conditional: first use forecast_read -> Done
 # todo overwrite if observation data is not available
 
 
@@ -20,90 +16,90 @@ class EnsembleAnalyses(object):
     def __init__(self, forecast_dir, grdc_dir):
         self.initialized = False
         # Initalize ensemble_analyses class
-
-        # Open specified folder based on forecast_date
+        # Open specified forecast directory based
         self.forecast_dir = forecast_dir
-        # If not specified open the newest folder in subdirectory
+        # If not specified open the last created folder in subdirectory
         if forecast_dir == "":
             all_subdirs = [d for d in os.listdir('.') if os.path.isdir(d)]
             latest_subdir = max(all_subdirs, key=os.path.getmtime)
             self.forecast_dir = latest_subdir
 
-        # Open specified GRDC folder
+        # Open specified GRDC station directory
         self.grdc_dir = grdc_dir
 
 
     def forecast_read(self):
         # Create empty dataset and list
-        ds = xr.Dataset()
-        data_var = []
+        forecast_ds = xr.Dataset()
+        forecast_ds_stats = xr.Dataset()
 
-        # loop through files and append all ensemble members to one dataset
-        for f in os.listdir(self.forecast_dir):
+        # Append all ensemble member in directory to xarray dataset
+        for file in os.listdir(self.forecast_dir):
             # break up name and extension
-            fName, fExt = os.path.splitext(f)
+            fName, fExt = os.path.splitext(file)
+
             # only use netcdf, ignore 'dischargeEns.nc file
             if fExt == '.nc' and fName != 'dischargeEns':
-                fpath = os.path.join(self.forecast_dir, f)
+                fpath = os.path.join(self.forecast_dir, file)
                 var_name = fName[:8]
-                data_var.append(var_name)
-                ds[var_name] = xr.open_dataarray(fpath)
-            if fName == 'dischargeEns':
-                fpath = os.path.join(self.forecast_dir, f)
-                ds_stats = xr.open_dataset(fpath)
+                forecast_ds[var_name] = xr.open_dataarray(fpath)
 
-        self.ds = ds
-        self.ds_stats = ds_stats
+            # Append forecast ensemble statistics to xarray dataset
+            if fName == 'dischargeEns':
+                fpath = os.path.join(self.forecast_dir, file)
+                forecast_ds_stats = xr.open_dataset(fpath)
+
+        self.forecast_ds = forecast_ds
+        self.forecast_ds_stats = forecast_ds_stats
 
         self.initialized = True
-        return self.ds, self.ds_stats
+        return self.forecast_ds, self.forecast_ds_stats
 
 
-    def grdc_read(self, station_id, lat=None, lon=None):
+    def grdc_read(self, grdc_station_id, lat=None, lon=None):
         if not self.initialized:
-            self.forecast_read()
+            raise NotImplementedError('Run def forecast_read before def grdc_read')
 
-        grdc_fname = str(station_id) + '.day'
-        self.grdc_fpath = os.path.join(self.grdc_dir, grdc_fname)
-        self.station_id = station_id
-
-        # initiating a dictionary that will contain all GRDC attributes:
-
-        self.metadata = grdc_metadata_reader(self.grdc_fpath, self.station_id)
-        self.name = self.metadata['station_name']
-        self.grdc_lat = self.metadata['grdc_latitude_in_arc_degree']
-        self.grdc_lon = self.metadata['grdc_longitude_in_arc_degree']
-        description = self.metadata['station_name'] + " - " + \
-                      self.metadata['river_name'] + " - " + \
-                      self.metadata['country_code']
-        
+        # Set grdc_station filename based on grdc_station_ID
+        grdc_station_filename = str(grdc_station_id) + '.day'
+        self.grdc_station_path = os.path.join(self.grdc_dir, grdc_station_filename)
+        self.grdc_station_id = grdc_station_id
 
 
-        # Import GRDC data into dataframe
-        grdc = pd.read_table(self.grdc_fpath, skiprows= 40, delimiter=';')
-        grdc = grdc.rename(columns={'YYYY-MM-DD':'date', ' Original':'discharge'})
-        grdc = grdc.reset_index().set_index(pd.DatetimeIndex(grdc['date']))
-        grdc = grdc.drop(columns=['hh:mm', ' Calculated', ' Flag', 'index', 'date'])
+        # Read all GRDC station metadata with grdc_metadata_reader function
+        self.metadata = grdc_metadata_reader(self.grdc_station_path)
 
-        grdc_select = grdc.loc[pd.to_datetime(str(self.ds.time.min().values)).strftime("%Y-%m-%d"):pd.to_datetime(str(self.ds.time.max().values)).strftime("%Y-%m-%d")]
+        # Overwrite GRDC metadata lat/lon with specified lat/lon when present
+        self.grdc_lat = lat
+        self.grdc_lon = lon
 
-        if grdc_select.empty:
+        # Import GRDC data into dataframe and modify dataframe format
+        grdc_station_df = pd.read_table(self.grdc_station_path, skiprows= 40, delimiter=';')
+        grdc_station_df = grdc_station_df.rename(columns={'YYYY-MM-DD':'date', ' Original':'discharge'})
+        grdc_station_df = grdc_station_df.reset_index().set_index(pd.DatetimeIndex(grdc_station_df['date']))
+        grdc_station_df = grdc_station_df.drop(columns=['hh:mm', ' Calculated', ' Flag', 'index', 'date'])
+
+        # Select GRDC station data that matches the forecast results Date
+        grdc_station_select = grdc_station_df.loc[pd.to_datetime(str(self.forecast_ds.time.min().values)).strftime("%Y-%m-%d"):pd.to_datetime(str(self.forecast_ds.time.max().values)).strftime("%Y-%m-%d")]
+
+        # Raise warning and use 10 year old data when data mismatch between forecast results and GRDC station observation occurs
+        if grdc_station_select.empty:
+            warnings.warn('GRDC station does not contain observations for forecast date. From the forecast date 10 years are subtracted in order to find observation data')
             # todo Change hardcoded - 10 years Remove or give alternative year statement
-            tstart = pd.to_datetime(self.ds.time.min().values) - relativedelta(years=10)
+            tstart = pd.to_datetime(self.forecast_ds.time.min().values) - relativedelta(years=10)
             tstart = tstart.strftime("%Y-%m-%d")
-            tend = pd.to_datetime(self.ds.time.max().values) - relativedelta(years=10)
+            tend = pd.to_datetime(self.forecast_ds.time.max().values) - relativedelta(years=10)
             tend = tend.strftime("%Y-%m-%d")
 
-            grdc_select = grdc.loc[str(tstart):str(tend)]
-            print("10 years are substracted from observation date")
+            grdc_station_select = grdc_station_df.loc[str(tstart):str(tend)]
 
-        self.grdc_select = grdc_select
-
-
-        return self.metadata, self.grdc_select
+        self.grdc_station_select = grdc_station_select
 
 
-def grdc_metadata_reader(grdc_fpath, station_id):
+        return self.metadata, self.grdc_station_select
+
+
+def grdc_metadata_reader(grdc_station_path):
     """
     This function is based on earlier work by Rolf Hut.   https://github.com/RolfHut/GRDC2NetCDF/blob/master/GRDC2NetCDF.py
     # DOI: 10.5281/zenodo.19695
@@ -124,7 +120,7 @@ def grdc_metadata_reader(grdc_fpath, station_id):
     attributeGRDC = {}
 
     # read the file
-    f = open(grdc_fpath);
+    f = open(grdc_station_path);
     allLines = f.read();
     f.close()
 
@@ -134,17 +130,17 @@ def grdc_metadata_reader(grdc_fpath, station_id):
 
     # get grdc ids (from files) and check their consistency with their
     # file names
-    id_from_file_name = int(os.path.basename(grdc_fpath).split(".")[0])
+    id_from_file_name = int(os.path.basename(grdc_station_path).split(".")[0])
     id_from_grdc = None
     if id_from_file_name == int(allLines[8].split(":")[1].strip()):
         id_from_grdc = int(allLines[8].split(":")[1].strip())
     else:
-        print("GRDC station " + str(id_from_file_name) + " (" + str(grdc_fpath) + \
+        print("GRDC station " + str(id_from_file_name) + " (" + str(grdc_station_path) + \
               ") is NOT used.")
 
     if id_from_grdc != None:
 
-        attributeGRDC["grdc_file_name"] = grdc_fpath
+        attributeGRDC["grdc_file_name"] = grdc_station_path
         attributeGRDC["id_from_grdc"] = id_from_grdc
 
         try:
