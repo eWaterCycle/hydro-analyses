@@ -32,10 +32,17 @@ RUN ```conda install -c pyviz geoviews```
 RUN 
 ```pip install hydrostats```
 
-
 RUN 
 ```pip install rank-histogram```
 
 RUN 
+```conda install pytest```
+
+Install the kernel to use this environment in a Jupyter Notebook
+RUN
+```python -m ipykernel install --user --name ewatercycle --display-name "Py3_eWaterCycle"```
+
+RUN 
 ```jupyter notebook```
+select the kernel "Py3_eWaterCycle"
 

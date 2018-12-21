@@ -101,12 +101,7 @@ class EnsembleAnalyses(object):
 
 def grdc_metadata_reader(grdc_station_path):
     """
-    This function is based on earlier work by Rolf Hut.   https://github.com/RolfHut/GRDC2NetCDF/blob/master/GRDC2NetCDF.py
-    # DOI: 10.5281/zenodo.19695
-    # that function was based on earlier work by Edwin Sutanudjaja
-    # from Utrecht University.
-    # https://github.com/edwinkost/discharge_analysis_IWMI
-    # initiating a dictionary that will contain all GRDC attributes:
+    # Initiating a dictionary that will contain all GRDC attributes.
     # This function is based on earlier work by Rolf Hut.
     # https://github.com/RolfHut/GRDC2NetCDF/blob/master/GRDC2NetCDF.py
     # DOI: 10.5281/zenodo.19695
