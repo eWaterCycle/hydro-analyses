@@ -39,6 +39,7 @@ RUN
 ```conda install pytest```
 
 Install the kernel to use this environment in a Jupyter Notebook
+
 RUN
 ```python -m ipykernel install --user --name ewatercycle --display-name "Py3_eWaterCycle"```
 
