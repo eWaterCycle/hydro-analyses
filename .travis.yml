@@ -10,4 +10,4 @@ install:
   - pip install -e ./eosc_pilot
 
 script:
-  - pytest
+  - pytest eosc_pilot
