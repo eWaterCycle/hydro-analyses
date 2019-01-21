@@ -1,4 +1,3 @@
 scipy
 xarray
-eosc_pilot/Ensemble_Analyses
 pytest
