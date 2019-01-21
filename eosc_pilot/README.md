@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/sebranchett/hydro-analyses.svg?branch=master)](https://travis-ci.com/sebranchett/hydro-analyses)
+
 ## Running the notebook in Windows:
 
 RUN 
