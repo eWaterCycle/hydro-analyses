@@ -1,4 +1,5 @@
 # coding: utf-8
+import os
 import pytest
 
 from Ensemble_Analyses import EnsembleAnalyses
@@ -42,8 +43,8 @@ def test_no_grdc(tmp_path):
         analysis.grdc_read(2)
 
 def test_grdc_metadata():
-    attributes = grdc_metadata_reader("146.day")
-    assert attributes["grdc_file_name"] == "146.day"
+    attributes = grdc_metadata_reader("grdc_data/146.day")
+    assert attributes["grdc_file_name"] == "grdc_data/146.day"
     assert attributes["id_from_grdc"] == 146
     assert attributes["file_generation_date"] == "2019-01-22"
     assert attributes["river_name"] == "THAMES"
@@ -62,14 +63,14 @@ def test_grdc_metadata():
 
 def test_no_metadata():
     with pytest.raises(Exception):
-       attributes = grdc_metadata_reader("666.day")
+       attributes = grdc_metadata_reader("grdc_data/666.day")
 
 def test_inconsistent_metadata():
-    attributes = grdc_metadata_reader("10.day")
+    attributes = grdc_metadata_reader("grdc_data/10.day")
     assert len(attributes) == 0
 
 def test_missing_metadata():
-    attributes = grdc_metadata_reader("30.day")
+    attributes = grdc_metadata_reader("grdc_data/30.day")
     assert attributes["file_generation_date"] == "NA"
     assert attributes["river_name"] == "NA"
     assert attributes["station_name"] == "NA"
@@ -86,5 +87,5 @@ def test_missing_metadata():
     assert attributes["nrMeasurements"] == "NA"
 
 def test_negative_catchment():
-    attributes = grdc_metadata_reader("40.day")
+    attributes = grdc_metadata_reader("grdc_data/40.day")
     assert attributes["grdc_catchment_area_in_km2"] == "NA"
