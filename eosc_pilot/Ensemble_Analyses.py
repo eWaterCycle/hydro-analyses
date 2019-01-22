@@ -76,8 +76,10 @@ class EnsembleAnalyses(object):
         self.metadata = grdc_metadata_reader(self.grdc_station_path)
 
         # Overwrite GRDC metadata lat/lon with specified lat/lon when present
-        self.grdc_lat = lat
-        self.grdc_lon = lon
+        if lat != None:
+            self.metadata["grdc_latitude_in_arc_degree"] = lat
+        if lon != None:
+            self.metadata["grdc_longitude_in_arc_degree"] = lon
 
         # Import GRDC data into dataframe and modify dataframe format
         grdc_station_df = pd.read_table(self.grdc_station_path, skiprows= 40, delimiter=';')
