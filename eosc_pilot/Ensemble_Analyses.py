@@ -229,4 +229,4 @@ def grdc_metadata_reader(grdc_station_path):
         except:
             attributeGRDC["nrMeasurements"] = "NA"
 
-        return attributeGRDC
+    return attributeGRDC
