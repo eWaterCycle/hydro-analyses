@@ -21,7 +21,11 @@ class EnsembleAnalyses(object):
         # If not specified open the last created folder in subdirectory
         if forecast_dir == "":
             all_subdirs = [d for d in os.listdir('.') if os.path.isdir(d)]
-            latest_subdir = max(all_subdirs, key=os.path.getmtime)
+            try:
+                latest_subdir = max(all_subdirs, key=os.path.getmtime)
+            except:
+                # no subdirectories to take the latest of
+                latest_subdir = os.path.abspath('.')
             self.forecast_dir = latest_subdir
 
         # Open specified GRDC station directory
