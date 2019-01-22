@@ -28,8 +28,20 @@ def test_no_forecast(tmp_path):
     assert len(data) == 0
     assert len(stats) == 0
 
-#def test_read_grdc():
-#todo
+def test_read_grdc_without_forecast():
+    analysis = EnsembleAnalyses("", "grdc_data")
+
+    #fake running forecast_read
+    analysis.initialized = True
+
+    with pytest.raises(Exception):
+        analysis.grdc_read(146, lat=11.1111, lon=22.2222)
+    assert analysis.grdc_station_path == os.path.join("grdc_data","146.day")
+    assert analysis.grdc_station_id == 146
+    assert analysis.metadata["grdc_latitude_in_arc_degree"] == 11.1111
+    assert analysis.metadata["grdc_longitude_in_arc_degree"] == 22.2222
+    
+#todo test_read_grdc_with_forecast
 
 def test_grdc_before_forecast(tmp_path):
     analysis = EnsembleAnalyses('', tmp_path)
