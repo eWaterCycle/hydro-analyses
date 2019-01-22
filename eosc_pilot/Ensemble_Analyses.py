@@ -71,6 +71,8 @@ class EnsembleAnalyses(object):
 
 
         # Read all GRDC station metadata with grdc_metadata_reader function
+        if not os.path.isfile(self.grdc_station_path):
+            raise NotImplementedError('Could not find file', self.grdc_station_path)
         self.metadata = grdc_metadata_reader(self.grdc_station_path)
 
         # Overwrite GRDC metadata lat/lon with specified lat/lon when present
