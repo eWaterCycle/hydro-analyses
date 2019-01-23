@@ -5,6 +5,9 @@ import pytest
 from Ensemble_Analyses import EnsembleAnalyses
 from Ensemble_Analyses import grdc_metadata_reader
 
+forecast_data = os.path.join(os.path.dirname(__file__), "forecast_data")
+grdc_data = os.path.join(os.path.dirname(__file__), "grdc_data")
+
 def test_set_directories():
     data = EnsembleAnalyses('C:\testdir\forecast_dir', 'D:/testdir/grdc_dir')
     assert data.forecast_dir == 'C:\testdir\forecast_dir'
@@ -19,31 +22,42 @@ def test_set_2many_directories():
     with pytest.raises(Exception):
         data = EnsembleAnalyses('C:\forecast_dir', 'D:/grdc_dir', "E:/one2many")
 
-#def test_read_forecast():
-#todo
+def test_read_forecast():
+#todo check if forecast files may be added to github
+    analysis = EnsembleAnalyses(forecast_data, "")
+    data, stats = analysis.forecast_read()
+    assert len(data) == 2 #corresponds to number of files
+    assert len(stats) == 3 #always 3?
+    assert analysis.initialized == True
 
 def test_no_forecast(tmp_path):
     analysis = EnsembleAnalyses(tmp_path, '')
     data, stats = analysis.forecast_read()
     assert len(data) == 0
     assert len(stats) == 0
+    assert analysis.initialized == True
 
 def test_read_grdc_without_forecast():
-    analysis = EnsembleAnalyses("", "grdc_data")
-
-    #fake running forecast_read
-    analysis.initialized = True
-
+    analysis = EnsembleAnalyses("", grdc_data)
+    analysis.initialized = True #fakes running forecast_read
     with pytest.raises(Exception):
         analysis.grdc_read(146, lat=11.1111, lon=22.2222)
-    assert analysis.grdc_station_path == os.path.join("grdc_data","146.day")
+    assert analysis.grdc_station_path == os.path.join(grdc_data,"146.day")
     assert analysis.grdc_station_id == 146
     assert analysis.metadata["grdc_latitude_in_arc_degree"] == 11.1111
     assert analysis.metadata["grdc_longitude_in_arc_degree"] == 22.2222
     
-#todo test_read_grdc_with_forecast
+def test_read_grdc_with_forecast():
+#todo check if forecast files may be added to github
+    analysis = EnsembleAnalyses(forecast_data, grdc_data)
+    data, stats = analysis.forecast_read()
+    assert len(data) == 2 #corresponds to number of files
+    analysis.grdc_read(146)
+    assert analysis.metadata["grdc_latitude_in_arc_degree"] == 51.5055
+    assert analysis.metadata["grdc_longitude_in_arc_degree"] == 00.0754
+    # assert analysis.grdc_station_select[discharge] == ??
 
-def test_grdc_before_forecast(tmp_path):
+def test_grdc_without_initialisation(tmp_path):
     analysis = EnsembleAnalyses('', tmp_path)
     with pytest.raises(Exception):
         analysis.grdc_read(2)
@@ -55,8 +69,9 @@ def test_no_grdc(tmp_path):
         analysis.grdc_read(2)
 
 def test_grdc_metadata():
-    attributes = grdc_metadata_reader("grdc_data/146.day")
-    assert attributes["grdc_file_name"] == "grdc_data/146.day"
+    grdc_data_file = os.path.join(grdc_data, "146.day")
+    attributes = grdc_metadata_reader(grdc_data_file)
+    assert attributes["grdc_file_name"] == grdc_data_file
     assert attributes["id_from_grdc"] == 146
     assert attributes["file_generation_date"] == "2019-01-22"
     assert attributes["river_name"] == "THAMES"
@@ -75,14 +90,14 @@ def test_grdc_metadata():
 
 def test_no_metadata():
     with pytest.raises(Exception):
-       attributes = grdc_metadata_reader("grdc_data/666.day")
+       attributes = grdc_metadata_reader(os.path.join(grdc_data, "666.day"))
 
 def test_inconsistent_metadata():
-    attributes = grdc_metadata_reader("grdc_data/10.day")
+    attributes = grdc_metadata_reader(os.path.join(grdc_data, "10.day"))
     assert len(attributes) == 0
 
 def test_missing_metadata():
-    attributes = grdc_metadata_reader("grdc_data/30.day")
+    attributes = grdc_metadata_reader(os.path.join(grdc_data, "30.day"))
     assert attributes["file_generation_date"] == "NA"
     assert attributes["river_name"] == "NA"
     assert attributes["station_name"] == "NA"
@@ -99,5 +114,5 @@ def test_missing_metadata():
     assert attributes["nrMeasurements"] == "NA"
 
 def test_negative_catchment():
-    attributes = grdc_metadata_reader("grdc_data/40.day")
+    attributes = grdc_metadata_reader(os.path.join(grdc_data, "40.day"))
     assert attributes["grdc_catchment_area_in_km2"] == "NA"

@@ -10,4 +10,4 @@ install:
   - pip install -e ./eosc_pilot
 
 script:
-  - pytest eosc_pilot
+  - pytest eosc_pilot -W ignore::UserWarning
