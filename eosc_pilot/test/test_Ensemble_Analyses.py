@@ -30,8 +30,8 @@ def test_set_2many_directories():
 #    assert len(stats) == 3 #always 3?
 #    assert analysis.initialized == True
 
-def test_no_forecast(tmp_path):
-    analysis = EnsembleAnalyses(tmp_path, '')
+def test_no_forecast(tmpdir):
+    analysis = EnsembleAnalyses(tmpdir, '')
     data, stats = analysis.forecast_read()
     assert len(data) == 0
     assert len(stats) == 0
@@ -57,13 +57,13 @@ def test_read_grdc_without_forecast():
 #    assert analysis.metadata["grdc_longitude_in_arc_degree"] == 00.0754
 #    # assert analysis.grdc_station_select[discharge] == ??
 
-def test_grdc_without_initialisation(tmp_path):
-    analysis = EnsembleAnalyses('', tmp_path)
+def test_grdc_without_initialisation(tmpdir):
+    analysis = EnsembleAnalyses('', tmpdir)
     with pytest.raises(Exception):
         analysis.grdc_read(2)
 
-def test_no_grdc(tmp_path):
-    analysis = EnsembleAnalyses('', tmp_path)
+def test_no_grdc(tmpdir):
+    analysis = EnsembleAnalyses('', tmpdir)
     analysis.initialized = True #fakes running forecast_read
     with pytest.raises(Exception):
         analysis.grdc_read(2)
