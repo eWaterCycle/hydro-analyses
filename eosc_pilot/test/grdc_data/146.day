@@ -4,26 +4,26 @@
 # Date format:           randomtextrandomtext
 # Field delimiter:       randomtextrandomtext
 #
-# file generation data
+# file generation data:  2019-01-22
 #
-# GRDC-No.:              30
-# River
-# Station
-# Country
-# Latitude (dec. °)
-# Longitude (de. °)
-# Catchment area (km²)
-# Altitude (m.a.s.l)
+# GRDC-No.:              146
+# River:                 THAMES
+# Station:               TOWER_BRIDGE
+# Country:               UK
+# Latitude (dec. °):     51.5055
+# Longitude (de. °):     00.0754
+# Catchment area (km²):  1.11
+# Altitude (m.a.s.l):    2.2
 # Next d/s station:      randomtextrandomtext
 # Remarks:               randomtextrandomtext
 #************************************************************
 #
-# Data Set Content
+# Data Set Content:      MADE UP TEST DATA
 #                        --------------------
-# Unit
-# Time series
-# No. of years
-# Last update
+# Unit:                  pounds per square inch
+# Time series:           1967 until yesterday
+# No. of years:          52
+# Last update:           2019-01-22
 #
 # randomtextrandomtext
 #     randomtextrandomtext
@@ -36,5 +36,5 @@
 #        randomtextrandomtext
 #        randomtextrandomtext
 #
-# Data lines
+# Data lines: 30
 # randomtextrandomtext
