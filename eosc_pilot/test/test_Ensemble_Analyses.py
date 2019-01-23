@@ -5,7 +5,7 @@ import pytest
 from Ensemble_Analyses import EnsembleAnalyses
 from Ensemble_Analyses import grdc_metadata_reader
 
-forecast_data = os.path.join(os.path.dirname(__file__), "forecast_data")
+#forecast_data = os.path.join(os.path.dirname(__file__), "forecast_data")
 grdc_data = os.path.join(os.path.dirname(__file__), "grdc_data")
 
 def test_set_directories():
@@ -22,13 +22,13 @@ def test_set_2many_directories():
     with pytest.raises(Exception):
         data = EnsembleAnalyses('C:\forecast_dir', 'D:/grdc_dir', "E:/one2many")
 
-def test_read_forecast():
-#todo check if forecast files may be added to github
-    analysis = EnsembleAnalyses(forecast_data, "")
-    data, stats = analysis.forecast_read()
-    assert len(data) == 2 #corresponds to number of files
-    assert len(stats) == 3 #always 3?
-    assert analysis.initialized == True
+#def test_read_forecast():
+##todo check if forecast files may be added to github
+#    analysis = EnsembleAnalyses(forecast_data, "")
+#    data, stats = analysis.forecast_read()
+#    assert len(data) == 2 #corresponds to number of files
+#    assert len(stats) == 3 #always 3?
+#    assert analysis.initialized == True
 
 def test_no_forecast(tmp_path):
     analysis = EnsembleAnalyses(tmp_path, '')
@@ -47,15 +47,15 @@ def test_read_grdc_without_forecast():
     assert analysis.metadata["grdc_latitude_in_arc_degree"] == 11.1111
     assert analysis.metadata["grdc_longitude_in_arc_degree"] == 22.2222
     
-def test_read_grdc_with_forecast():
-#todo check if forecast files may be added to github
-    analysis = EnsembleAnalyses(forecast_data, grdc_data)
-    data, stats = analysis.forecast_read()
-    assert len(data) == 2 #corresponds to number of files
-    analysis.grdc_read(146)
-    assert analysis.metadata["grdc_latitude_in_arc_degree"] == 51.5055
-    assert analysis.metadata["grdc_longitude_in_arc_degree"] == 00.0754
-    # assert analysis.grdc_station_select[discharge] == ??
+#def test_read_grdc_with_forecast():
+##todo check if forecast files may be added to github
+#    analysis = EnsembleAnalyses(forecast_data, grdc_data)
+#    data, stats = analysis.forecast_read()
+#    assert len(data) == 2 #corresponds to number of files
+#    analysis.grdc_read(146)
+#    assert analysis.metadata["grdc_latitude_in_arc_degree"] == 51.5055
+#    assert analysis.metadata["grdc_longitude_in_arc_degree"] == 00.0754
+#    # assert analysis.grdc_station_select[discharge] == ??
 
 def test_grdc_without_initialisation(tmp_path):
     analysis = EnsembleAnalyses('', tmp_path)
