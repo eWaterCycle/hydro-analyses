@@ -10,7 +10,6 @@ from dateutil.relativedelta import relativedelta
 # todo overwrite if observation data is not available
 
 
-
 class EnsembleAnalyses(object):
 
     def __init__(self, forecast_dir, grdc_dir):
@@ -30,7 +29,6 @@ class EnsembleAnalyses(object):
 
         # Open specified GRDC station directory
         self.grdc_dir = grdc_dir
-
 
     def forecast_read(self):
         # Create empty dataset and list
@@ -59,50 +57,64 @@ class EnsembleAnalyses(object):
         self.initialized = True
         return self.forecast_ds, self.forecast_ds_stats
 
-
     def grdc_read(self, grdc_station_id, lat=None, lon=None):
         if not self.initialized:
-            raise NotImplementedError('Run def forecast_read before def grdc_read')
+            raise NotImplementedError(
+                    'Run def forecast_read before def grdc_read')
 
         # Set grdc_station filename based on grdc_station_ID
-        grdc_station_filename = str(grdc_station_id) + '.day'
-        self.grdc_station_path = os.path.join(self.grdc_dir, grdc_station_filename)
+        grdc_station_filename = str(grdc_station_id) +  \
+                                '.day'
+        self.grdc_station_path = os.path.join(self.grdc_dir,
+                                 grdc_station_filename)
         self.grdc_station_id = grdc_station_id
-
 
         # Read all GRDC station metadata with grdc_metadata_reader function
         if not os.path.isfile(self.grdc_station_path):
-            raise NotImplementedError('Could not find file', self.grdc_station_path)
+            raise NotImplementedError('Could not find file',
+                  self.grdc_station_path)
         self.metadata = grdc_metadata_reader(self.grdc_station_path)
 
         # Overwrite GRDC metadata lat/lon with specified lat/lon when present
-        if lat != None:
+        if lat is not None:
             self.metadata["grdc_latitude_in_arc_degree"] = lat
-        if lon != None:
+        if lon is not None:
             self.metadata["grdc_longitude_in_arc_degree"] = lon
 
         # Import GRDC data into dataframe and modify dataframe format
-        grdc_station_df = pd.read_table(self.grdc_station_path, skiprows= 40, delimiter=';')
-        grdc_station_df = grdc_station_df.rename(columns={'YYYY-MM-DD':'date', ' Original':'discharge'})
-        grdc_station_df = grdc_station_df.reset_index().set_index(pd.DatetimeIndex(grdc_station_df['date']))
-        grdc_station_df = grdc_station_df.drop(columns=['hh:mm', ' Calculated', ' Flag', 'index', 'date'])
+        grdc_station_df = pd.read_table(self.grdc_station_path, skiprows=40,
+                          delimiter=';')
+        grdc_station_df = grdc_station_df.rename(columns={'YYYY-MM-DD': 'date',
+                          ' Original': 'discharge'})
+        grdc_station_df = grdc_station_df.reset_index().set_index(
+                          pd.DatetimeIndex(grdc_station_df['date']))
+        grdc_station_df = grdc_station_df.drop(columns=['hh:mm',
+                          ' Calculated', ' Flag', 'index', 'date'])
 
         # Select GRDC station data that matches the forecast results Date
-        grdc_station_select = grdc_station_df.loc[pd.to_datetime(str(self.forecast_ds.time.min().values)).strftime("%Y-%m-%d"):pd.to_datetime(str(self.forecast_ds.time.max().values)).strftime("%Y-%m-%d")]
+        grdc_station_select = grdc_station_df.loc[pd.to_datetime(
+            str(self.forecast_ds.time.min().values)).strftime("%Y-%m-%d"):pd.
+            to_datetime(str(self.forecast_ds.time.max().values)).
+            strftime("%Y-%m-%d")]
 
-        # Raise warning and use 10 year old data when data mismatch between forecast results and GRDC station observation occurs
+        # Raise warning and use 10 year old data when data mismatch between
+        # forecast results and GRDC station observation occurs
         if grdc_station_select.empty:
-            warnings.warn('GRDC station does not contain observations for forecast date. From the forecast date 10 years are subtracted in order to find observation data')
-            # todo Change hardcoded - 10 years Remove or give alternative year statement
-            tstart = pd.to_datetime(self.forecast_ds.time.min().values) - relativedelta(years=10)
+            warnings.warn('GRDC station does not contain observations for \
+            forecast date. From the forecast date 10 years are subtracted in \
+            order to find observation data')
+            # todo Change hardcoded - 10 years Remove or give alternative
+            # year statement
+            tstart = pd.to_datetime(self.forecast_ds.time.min().values) - \
+                                    relativedelta(years=10)
             tstart = tstart.strftime("%Y-%m-%d")
-            tend = pd.to_datetime(self.forecast_ds.time.max().values) - relativedelta(years=10)
+            tend = pd.to_datetime(self.forecast_ds.time.max().values) - \
+                                  relativedelta(years=10)
             tend = tend.strftime("%Y-%m-%d")
 
             grdc_station_select = grdc_station_df.loc[str(tstart):str(tend)]
 
         self.grdc_station_select = grdc_station_select
-
 
         return self.metadata, self.grdc_station_select
 
@@ -123,8 +135,8 @@ def grdc_metadata_reader(grdc_station_path):
     attributeGRDC = {}
 
     # read the file
-    f = open(grdc_station_path);
-    allLines = f.read();
+    f = open(grdc_station_path)
+    allLines = f.read()
     f.close()
 
     # split the content of the file into several lines
@@ -138,10 +150,10 @@ def grdc_metadata_reader(grdc_station_path):
     if id_from_file_name == int(allLines[8].split(":")[1].strip()):
         id_from_grdc = int(allLines[8].split(":")[1].strip())
     else:
-        print("GRDC station " + str(id_from_file_name) + " (" + str(grdc_station_path) + \
-              ") is NOT used.")
+        print("GRDC station " + str(id_from_file_name) + " (" +
+              str(grdc_station_path) + ") is NOT used.")
 
-    if id_from_grdc != None:
+    if id_from_grdc is not None:
 
         attributeGRDC["grdc_file_name"] = grdc_station_path
         attributeGRDC["id_from_grdc"] = id_from_grdc
