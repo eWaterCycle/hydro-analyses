@@ -73,6 +73,7 @@ class EnsembleAnalyses(object):
         self.grdc_lat = lat
         self.grdc_lon = lon
 
+
         # Import GRDC data into dataframe and modify dataframe format
         grdc_station_df = pd.read_table(self.grdc_station_path, skiprows= 40, delimiter=';')
         grdc_station_df = grdc_station_df.rename(columns={'YYYY-MM-DD':'date', ' Original':'discharge'})
