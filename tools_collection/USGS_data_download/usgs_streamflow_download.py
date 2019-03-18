@@ -40,7 +40,6 @@ def convert_unit_timestep(workingfolder):
             df['discharge'] = df['discharge'].replace('Ice',0) # Remove strings from series
             df['discharge'] = df['discharge'].apply(lambda x: float(x)) # Convert series to float
             df['discharge'] = df['discharge'].apply(lambda x: x/35.315) # Convert to cubic meters per second
-            df['datetime'] = pd.to_datetime(df['datetime'], infer_datetime_format=True) # Convert to datetime
             df.index = pd.to_datetime(df['datetime'], infer_datetime_format=True) # Convert to datetime and set index
             df = df.drop(columns='datetime') # Drop obsolete column
             df = df.resample('H').sum() # Resample to hourly values
