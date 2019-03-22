@@ -11,7 +11,7 @@ from grdc_explore import dataframe_from_stationId, valid_series, fill_with_empty
 grdc_data = os.path.join(os.path.dirname(__file__), "grdc_data")
 
 def test_dataframe_from_stationId():
-    df = dataframe_from_stationId(grdc_data, '146')
+    df = dataframe_from_stationId(grdc_data, '30_datalines')
     assert len(df) == 30
 
 def test_dataframe_file_too_short():
@@ -41,6 +41,14 @@ cleaned = combined.dropna(axis=0, how='any')
 def test_valid_series():
     num_invalid_days = 0
     series = valid_series(cleaned, num_invalid_days)
-    results = [10, 2, 3, 6]
+    results = [10, 2, 3, 4]
+    assert all([a == b for a, b in zip(results,
+        series['Number of days in series'].values)])
+    
+def test_valid_1_invalid():
+    num_invalid_days = 2
+    series = valid_series(cleaned, num_invalid_days)
+    results = [28]
+    print(series['Number of days in series'].values)
     assert all([a == b for a, b in zip(results,
         series['Number of days in series'].values)])

@@ -36,7 +36,7 @@
 #        randomtestrandomtext
 #        randomtestrandomtext
 #
-# Data lines: 30
+# Data lines: 28
 # randomtestrandomtext
 YYYY-MM-DD;hh:mm; Original; Calculated; Flag
 1967-06-01;--:--;      0.001;      0.000; -999
@@ -64,6 +64,6 @@ YYYY-MM-DD;hh:mm; Original; Calculated; Flag
 1967-06-23;--:--;      0.023;      0.000; -999
 1967-06-24;--:--;      0.024;      0.000; -999
 1967-06-25;--:--;      0.025;      0.000; -999
-1967-06-26;--:--;      0.026;      0.000; -999
+1967-06-26;--:--;      -999;       0.000; -999
 1967-06-27;--:--;      -999;       0.000; -999
 1967-06-28;--:--;      0.028;      0.000; -999
