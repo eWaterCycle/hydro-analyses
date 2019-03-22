@@ -27,6 +27,6 @@ RUN
 ```jupyter notebook```
 select the kernel "Py3_eWaterCycle"
 
-## For running pytest:
+## Before running pytest:
 RUN 
 ```pip install -e ./grdc_explore```
