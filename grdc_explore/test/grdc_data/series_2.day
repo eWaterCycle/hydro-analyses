@@ -1,0 +1,71 @@
+# Title:                 randomtestrandomtext
+#                        randomtestrandomtext
+# Format:                randomtestrandomtext
+# Date format:           randomtestrandomtext
+# Field delimiter:       randomtestrandomtext
+#
+# file generation data:  2019-01-22
+#
+# GRDC-No.:              146
+# River:                 THAMES
+# Station:               TOWER_BRIDGE
+# Country:               UK
+# Latitude (dec.  ):     51.5055
+# Longitude (de.  ):     00.0754
+# Catchment area (km ):  1.11
+# Altitude (m.a.s.l):    2.2
+# Next d/s station:      randomtestrandomtext
+# Remarks:               randomtestrandomtext
+#************************************************************
+#
+# Data Set Content:      MADE UP TEST DATA
+#                        --------------------
+# Unit:                  pounds per square inch
+# Time series:           1967 until yesterday
+# No. of years:          52
+# Last update:           2019-01-22
+#
+# randomtestrandomtext
+#     randomtestrandomtext
+#     randomtestrandomtext
+#     randomtestrandomtext
+#     randomtestrandomtext
+#     randomtestrandomtext
+#        randomtestrandomtext
+#        randomtestrandomtext
+#        randomtestrandomtext
+#        randomtestrandomtext
+#
+# Data lines: 30
+# randomtestrandomtext
+YYYY-MM-DD;hh:mm; Original; Calculated; Flag
+1967-06-01;--:--;      0.100;      0.000; -999
+1967-06-02;--:--;      0.200;      0.000; -999
+1967-06-03;--:--;      0.300;      0.000; -999
+1967-06-04;--:--;      0.400;      0.000; -999
+1967-06-05;--:--;      0.500;      0.000; -999
+1967-06-06;--:--;      0.600;      0.000; -999
+1967-06-07;--:--;      0.700;      0.000; -999
+1967-06-08;--:--;      0.800;      0.000; -999
+1967-06-09;--:--;      0.900;      0.000; -999
+1967-06-10;--:--;      1.000;      0.000; -999
+1967-06-11;--:--;      1.100;      0.000; -999
+1967-06-12;--:--;      1.200;      0.000; -999
+1967-06-13;--:--;      -999;       0.000; -999
+1967-06-14;--:--;      1.400;      0.000; -999
+1967-06-15;--:--;      1.500;      0.000; -999
+1967-06-16;--:--;      1.600;      0.000; -999
+1967-06-17;--:--;      1.700;      0.000; -999
+1967-06-18;--:--;      1.800;      0.000; -999
+1967-06-19;--:--;      1.900;      0.000; -999
+1967-06-20;--:--;      -999;       0.000; -999
+1967-06-21;--:--;      2.100;      0.000; -999
+1967-06-22;--:--;      2.200;      0.000; -999
+1967-06-23;--:--;      2.300;      0.000; -999
+1967-06-24;--:--;      2.400;      0.000; -999
+1967-06-25;--:--;      2.500;      0.000; -999
+1967-06-26;--:--;      2.600;      0.000; -999
+1967-06-27;--:--;      2.700;      0.000; -999
+1967-06-28;--:--;      2.800;      0.000; -999
+1967-06-29;--:--;      2.900;      0.000; -999
+1967-06-30;--:--;      3.000;      0.000; -999
