@@ -66,6 +66,8 @@ def fill_with_empty_rows(original, first_day, last_day):
 def fill_nans(value_before, value_after, num_vals):
     ''' Make a list of values, num_vals long, that are a linear interpolation between
     value_before and value_after. '''
+    
+    # todo check if num_vals is an integer
     vals = []
     delta = (value_after - value_before) / (num_vals + 1)
     for i in range (num_vals):
