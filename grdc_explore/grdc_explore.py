@@ -23,7 +23,7 @@ def valid_series(cleaned, num_invalid_days=0):
     end dates of series with (nearly) consecutive days of valid discharge data.
     num_invalid_days is the number of consecutive days in a series that may contain invalid data.
     
-    Every row in the initial dataframe has valid data points for all stations. '''
+    Every row in the cleaned, input dataframe must have valid data points for all stations. '''
 
     series = pd.DataFrame(columns=['Start Date', 'End Date', 'Number of days in series'])
 
