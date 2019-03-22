@@ -52,3 +52,11 @@ def test_valid_1_invalid():
     print(series['Number of days in series'].values)
     assert all([a == b for a, b in zip(results,
         series['Number of days in series'].values)])
+
+def test_fill_with_empty_rows():
+    input_df = df_1.drop(columns=['date'])
+    input_df = input_df.replace(-999., np.nan)
+    input_df = input_df.dropna(axis=0, how='any')
+    output_df = fill_with_empty_rows(input_df, input_df.index[0], input_df.index[-1])
+    assert len(input_df) == 24
+    assert len(output_df) == 28
