@@ -8,6 +8,8 @@ os:
 install: 
   - pip install -r requirements.txt
   - pip install -e ./eosc_pilot
+  - pip install -e ./grdc_explore
 
 script:
   - pytest eosc_pilot -W ignore::UserWarning
+  - pytest grdc_explore
