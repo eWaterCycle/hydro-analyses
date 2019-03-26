@@ -81,6 +81,14 @@ def test_fill_nans():
     assert all([a == pytest.approx(b) for a, b in zip(results, filling)])
 
 
+def test_fill_nans_not_int():
+    before = 1.1
+    after = 5.5
+    posts = 3.
+    with pytest.raises(AssertionError):
+        fill_nans(before, after, posts)
+
+
 def test_replace_nans():
     df = pd.DataFrame([[1.,      1.],
                        [np.nan,  2.],
@@ -89,7 +97,7 @@ def test_replace_nans():
                        [5.,      np.nan],
                        [6.,      np.nan],
                        [7.,      7.]],
-                       columns=['miss one', 'miss three'])
+                      columns=['miss one', 'miss three'])
     df['date'] = pd.date_range('2019-03-22', periods=7, freq='D')
     df = df.reset_index().set_index(pd.DatetimeIndex(df['date']))
     df = df.drop(columns=['date'])

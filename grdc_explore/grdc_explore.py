@@ -7,8 +7,8 @@ from datetime import datetime
 def dataframe_from_stationId(grdc_folder, station_id):
     '''Create dataframe from grdc file.
 
-    Search the grdc_folder for a file with name <station_id>.day,
-    skip the header rows and return the dates and discharges in a dataframe'''
+    Search the grdc_folder for a file with name <station_id>.day, skip
+    the header rows and return the dates and discharges in a dataframe.'''
 
     filename = str(station_id) + ".day"
     grdc_file = os.path.join(grdc_folder, filename)
@@ -24,7 +24,7 @@ def dataframe_from_stationId(grdc_folder, station_id):
 
 
 def valid_series(cleaned, num_invalid_days=0):
-    ''' Idendify valid series of data for all stations.
+    '''Idendify valid series of data for all stations.
 
     Search through a cleaned and sorted dataframe and return a
     dataframe with start end dates of series with (nearly) consecutive
@@ -32,10 +32,10 @@ def valid_series(cleaned, num_invalid_days=0):
     consecutive days in a series that may contain invalid data.
 
     Every row in the cleaned, input dataframe must have valid data points
-    for all stations. '''
+    for all stations.'''
 
     series = pd.DataFrame(columns=['Start Date', 'End Date',
-             'Number of days in series'])
+                                   'Number of days in series'])
 
     init = True
     for index, row in cleaned.iterrows():
@@ -51,9 +51,10 @@ def valid_series(cleaned, num_invalid_days=0):
             series_length = (end_date - start_date).days
             if (series_length > 0):
                 series = series.append({'Start Date': start_date,
-                         'End Date': end_date,
-                         'Number of days in series': series_length+1},
-                         ignore_index=True)
+                                        'End Date': end_date,
+                                        'Number of days in series':
+                                        series_length+1},
+                                       ignore_index=True)
             start_date = date
             end_date = start_date
 
@@ -63,7 +64,7 @@ def valid_series(cleaned, num_invalid_days=0):
         series = series.append({'Start Date': start_date,
                                 'End Date': end_date,
                                 'Number of days in series': series_length+1},
-                                ignore_index=True)
+                               ignore_index=True)
     return series
 
 
@@ -71,7 +72,7 @@ def fill_with_empty_rows(original, first_day, last_day):
     '''Complete a dataframe with a row for each day in a range.
 
     Take a dataframe with a sorted Timestamp index (one row per day)
-    and add missing days '''
+    and add missing days.'''
 
     frame = original.copy()
     for day in (first_day + pd.to_timedelta(n, unit='d')
@@ -86,9 +87,9 @@ def fill_nans(value_before, value_after, num_vals):
     '''Generate linearly interpolated values over a range.
 
     Make a list of values, num_vals long, that are a linear interpolation
-    between value_before and value_after. '''
+    between value_before and value_after.'''
 
-    # todo check if num_vals is an integer
+    assert(isinstance(num_vals, int)), "Number of NaNs must be an integer."
     vals = []
     delta = (value_after - value_before) / (num_vals + 1)
     for i in range(num_vals):
@@ -101,7 +102,7 @@ def replace_nans(original):
 
     Return a copy of a dataframe, with the NaNs replaced by linearly
     interpolated values.
-    The values are interpolated for each column/station in turn. '''
+    The values are interpolated for each column/station in turn.'''
 
     interpolated = original.copy()
     for column in original:
@@ -124,7 +125,7 @@ def replace_nans(original):
                     high_idx = index
                     high_val = value
                     fill_values = (fill_nans(low_val, high_val,
-                                      (high_idx - low_idx).days - 1))
+                                             (high_idx - low_idx).days - 1))
                     interpolated.loc[(low_idx + pd.Timedelta(days=1)):
                                      (high_idx - pd.Timedelta(days=1)),
                                      column] = fill_values
