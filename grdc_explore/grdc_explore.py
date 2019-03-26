@@ -111,7 +111,7 @@ def replace_nans(original):
         interp_zone = False
         for index, value in original[column].iteritems():
             if init:
-                assert(not np.isnan(value))
+                assert(not np.isnan(value)), "First row must contain values."
                 # the first row should be valid as should the last
                 low_idx = index
                 low_val = value
@@ -139,4 +139,5 @@ def replace_nans(original):
                 else:
                     low_idx = index
                     low_val = value
+        assert(not interp_zone), "Last row must contain values."
     return interpolated
